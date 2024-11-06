@@ -1,5 +1,9 @@
 services:
-  web-server:
+  server:
+    image: docker-template
+    container_name: docker-template
+    networks:
+      - docker-template
     restart: on-failure
     build: .
     ports:
