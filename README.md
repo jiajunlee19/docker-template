@@ -21,7 +21,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ### Docker Commands
 - Build a docker image, named as `docker-template`
   ```
-  docker build -t jiajunlee19/docker-template .
+  docker build -t docker-template .
   ```
 
 - Run a docker container, published on `HOST:CONTAINER` port
@@ -50,7 +50,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
   docker network create docker-template
   ```
 
-- Running docker with [compose.yml](/compose.yml)
+- Running docker with [compose.yaml](/compose.yaml)
   ```
   docker compose up -d
   ```
