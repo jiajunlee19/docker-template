@@ -1,4 +1,18 @@
-FROM node:18-alpine AS base
+FROM node:22.11.0-alpine AS base
+
+# Only when needed, set ARG variables for build-time purposes or ENV variables for run-time purposes
+# ARG HTTP_PROXY=
+# ARG HTTPS_PROXY=
+# ARG NO_PROXY=
+
+# Install proxy cert if required to run behind a proxy
+# ARG NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
+# COPY myCAcerts.pem /root/ca-certificates.crt
+# RUN cat /root/ca-certificates.crt >> /etc/ssl/certs/ca-certificates.crt
+# RUN apk --no-cache add ca-certificates && rm -rf /var/cache/apk/*
+# COPY myCAcerts.pem /usr/local/share/ca-certificates/
+# RUN update-ca-certificates
+# RUN apk --no-cache add curl
 
 # Install dependencies only when needed
 FROM base AS deps
@@ -7,12 +21,10 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Install dependencies based on the preferred package manager
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* .npmrc* ./
+COPY package.json package-lock.json* .npmrc* ./
 RUN \
-  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-  elif [ -f package-lock.json ]; then npm ci; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
-  else echo "Lockfile not found." && exit 1; \
+  if [ -f package.json ]; then npm install; \
+  else echo "package.json not found." && exit 1; \
   fi
 
 
@@ -28,10 +40,8 @@ COPY . .
 # ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN \
-  if [ -f yarn.lock ]; then yarn run build; \
-  elif [ -f package-lock.json ]; then npm run build; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
-  else echo "Lockfile not found." && exit 1; \
+  if [ -f package.json ]; then npm run build; \
+  else echo "package.json not found." && exit 1; \
   fi
 
 # Production image, copy all the files and run next
