@@ -1,10 +1,16 @@
 services:
   server:
-    image: docker-template
+    image: docker-template:1.0.0
     container_name: docker-template
     networks:
       - docker-template
     restart: on-failure
     build: .
+    env_file:
+      - .env
     ports:
-      - '3000:3000'
+      - '${PORT}:${PORT}'
+
+networks:
+  docker-template:
+    name: docker-template
