@@ -1,6 +1,6 @@
 services:
   server:
-    image: docker-template:1.0.0
+    image: docker-template:latest
     container_name: docker-template
     networks:
       - docker-template
